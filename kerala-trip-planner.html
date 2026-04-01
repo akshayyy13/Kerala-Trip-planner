@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kerala Trip Planner — 10 Log, Sept 12–20</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1a3a2a;
+    --deep: #0d2218;
+    --emerald: #2d7a4f;
+    --jade: #4aab70;
+    --sand: #e8d5a3;
+    --gold: #c9a84c;
+    --cream: #faf6ee;
+    --mist: #f0ede6;
+    --text: #1a1a1a;
+    --soft: #555;
+    --border: #d4c9a8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--deep);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(45,122,79,0.25) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(201,168,76,0.1) 0%, transparent 60%);
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    color: var(--jade);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 0.95;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.4s forwards;
+  }
+
+  .hero h1 span {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 3vw, 1.8rem);
+    color: var(--sand);
+    font-style: italic;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.6s forwards;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.8s forwards;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sand);
+    opacity: 0.7;
+    margin-top: 0.3rem;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    color: var(--sand);
+    opacity: 0.4;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+
+  /* NAV TABS */
+  .nav-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--forest);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    flex-shrink: 0;
+    padding: 1rem 1.4rem;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .nav-tab:hover { color: var(--sand); }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+  /* DAY CARDS */
+  .day-card {
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+  }
+
+  .day-header {
+    background: var(--forest);
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .day-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    min-width: 2.5rem;
+  }
+
+  .day-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--cream);
+    font-weight: 700;
+  }
+
+  .day-info .day-date {
+    font-size: 0.72rem;
+    color: var(--jade);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .day-tags {
+    margin-left: auto;
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .tag {
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .tag-green { background: rgba(74,171,112,0.2); color: var(--jade); }
+  .tag-gold { background: rgba(201,168,76,0.2); color: var(--gold); }
+  .tag-blue { background: rgba(74,144,226,0.15); color: #74a8e6; }
+
+  .day-body {
+    padding: 1.5rem;
+    display: none;
+  }
+
+  .day-body.open { display: block; }
+
+  .chevron {
+    margin-left: auto;
+    color: rgba(255,255,255,0.3);
+    font-size: 0.9rem;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .day-header.open .chevron { transform: rotate(180deg); }
+
+  /* TIMELINE */
+  .timeline { position: relative; }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 3.2rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+  }
+
+  .tl-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--gold);
+    min-width: 3rem;
+    padding-top: 0.1rem;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .tl-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--emerald);
+    border: 2px solid white;
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 3px rgba(45,122,79,0.2);
+  }
+
+  .tl-dot.gold { background: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.2); }
+  .tl-dot.blue { background: #74a8e6; box-shadow: 0 0 0 3px rgba(116,168,230,0.2); }
+
+  .tl-content { flex: 1; }
+
+  .tl-title {
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .tl-desc {
+    font-size: 0.82rem;
+    color: var(--soft);
+    line-height: 1.5;
+  }
+
+  .activity-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--mist);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.78rem;
+    margin: 0.3rem 0.2rem 0 0;
+    font-weight: 500;
+  }
+
+  .activity-chip .price {
+    color: var(--emerald);
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+  }
+
+  .transport-bar {
+    background: linear-gradient(135deg, var(--forest), var(--emerald));
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: white;
+    font-size: 0.82rem;
+  }
+
+  .transport-bar .icon { font-size: 1.2rem; }
+  .transport-bar strong { font-weight: 600; }
+  .transport-bar .transport-detail { color: rgba(255,255,255,0.8); font-size: 0.75rem; margin-top: 0.1rem; }
+
+  .food-note {
+    background: #fff8e8;
+    border: 1px solid #e8d5a3;
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-top: 0.8rem;
+    font-size: 0.8rem;
+    color: #6b5a30;
+  }
+
+  .food-note strong { color: #8b6914; }
+
+  /* TRANSPORT SECTION */
+  .transport-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .tc-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .tc-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--forest);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .tc-title { font-weight: 700; font-size: 1rem; }
+  .tc-sub { font-size: 0.78rem; color: var(--soft); margin-top: 0.1rem; }
+
+  .tc-body { font-size: 0.83rem; color: var(--soft); line-height: 1.6; }
+
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+  }
+
+  .pro, .con {
+    padding: 0.5rem 0.7rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  .pro { background: #edf7f0; color: #1a6b3c; }
+  .con { background: #fdf0f0; color: #8b2525; }
+
+  .recommend-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--deep);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  /* BUDGET */
+  .budget-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .budget-table th {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 0.7rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+  }
+
+  .budget-table th:last-child { text-align: right; }
+
+  .budget-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .budget-table td:last-child { text-align: right; font-family: 'DM Mono', monospace; font-weight: 600; }
+
+  .budget-table tr:nth-child(even) td { background: var(--mist); }
+
+  .budget-table .total td {
+    font-weight: 700;
+    background: var(--forest) !important;
+    color: var(--cream);
+    border: none;
+    font-size: 0.95rem;
+  }
+
+  .budget-table .total td:last-child { color: var(--gold); font-size: 1rem; }
+
+  .per-person-note {
+    background: var(--deep);
+    color: var(--cream);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  .per-person-note .big { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--gold); display: block; }
+  .per-person-note .small { font-size: 0.78rem; opacity: 0.7; }
+
+  /* BOOKINGS */
+  .booking-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .booking-header {
+    background: var(--forest);
+    padding: 0.9rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .booking-header h4 {
+    color: var(--cream);
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .urgency-badge {
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .urgent { background: #ff6b6b; color: white; }
+  .soon { background: var(--gold); color: var(--deep); }
+  .flexible { background: rgba(255,255,255,0.2); color: var(--cream); }
+
+  .booking-body {
+    padding: 1rem 1.2rem;
+  }
+
+  .booking-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.4rem 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 0.82rem;
+    gap: 1rem;
+  }
+
+  .booking-row:last-child { border: none; }
+  .booking-row .label { color: var(--soft); flex-shrink: 0; }
+  .booking-row .value { font-weight: 500; text-align: right; }
+  .booking-row .value a { color: var(--emerald); text-decoration: none; }
+
+  /* VEG SECTION */
+  .veg-card {
+    background: #edf7f0;
+    border: 1px solid #b6dfc4;
+    border-left: 4px solid var(--emerald);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .veg-card h4 { color: #1a6b3c; font-size: 0.9rem; margin-bottom: 0.4rem; }
+  .veg-card p { font-size: 0.82rem; color: #2d5a3d; line-height: 1.5; }
+
+  /* ACTIVITIES */
+  .activity-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .act-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--forest);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .act-body { flex: 1; }
+  .act-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .act-location { font-size: 0.72rem; color: var(--jade); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+  .act-desc { font-size: 0.82rem; color: var(--soft); line-height: 1.5; }
+  .act-price { font-family: 'DM Mono', monospace; font-weight: 700; color: var(--emerald); font-size: 0.85rem; margin-top: 0.4rem; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--forest);
+    margin-bottom: 0.4rem;
+  }
+
+  .section-subtitle {
+    color: var(--soft);
+    font-size: 0.88rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeUp 0.5s forwards;
+  }
+
+  /* ROUTE MAP */
+  .route-visual {
+    background: var(--deep);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+  }
+
+  .route-line {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    min-width: max-content;
+  }
+
+  .route-city {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .route-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--deep);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.3);
+  }
+
+  .route-name {
+    font-size: 0.68rem;
+    color: var(--sand);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .route-arrow {
+    color: var(--jade);
+    font-size: 1.2rem;
+    padding: 0 0.4rem;
+    margin-top: -1.2rem;
+  }
+
+  .route-days {
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.35);
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .pros-cons { grid-template-columns: 1fr; }
+    .day-tags { display: none; }
+    .hero-stats { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">God's Own Country • Sept 12–20, 2026</div>
+  <h1>Kerala<br><span>Trip Planner</span></h1>
+  <div class="hero-sub">10 Logon Ka Sapna — Pura Plan Yahan Hai</div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">9</span><span class="stat-label">Raat</span></div>
+    <div class="stat"><span class="stat-num">10</span><span class="stat-label">Log</span></div>
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Jagahein</span></div>
+    <div class="stat"><span class="stat-num">20+</span><span class="stat-label">Activities</span></div>
+  </div>
+  <div class="scroll-hint">▼ scroll</div>
+</div>
+
+<!-- TABS -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('itinerary', this)">🗺️ Itinerary</button>
+  <button class="nav-tab" onclick="switchTab('transport', this)">🚐 Transport</button>
+  <button class="nav-tab" onclick="switchTab('activities', this)">⚡ Activities</button>
+  <button class="nav-tab" onclick="switchTab('veg', this)">🥗 Veg Food</button>
+  <button class="nav-tab" onclick="switchTab('budget', this)">💰 Budget</button>
+  <button class="nav-tab" onclick="switchTab('bookings', this)">📋 Bookings</button>
+</div>
+
+<!-- ITINERARY SECTION -->
+<div id="itinerary" class="section active">
+  <div class="container">
+    <h2 class="section-title">Day-by-Day Plan</h2>
+    <p class="section-subtitle">Har din click karke details dekho • Sabse important activities ⭐ se mark hain</p>
+
+    <!-- Route Visual -->
+    <div class="route-visual">
+      <div style="font-size:0.7rem; color: rgba(255,255,255,0.4); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1rem; font-family:'DM Mono',monospace;">Route Map</div>
+      <div class="route-line">
+        <div class="route-city"><div class="route-days">Night</div><div class="route-dot"></div><div class="route-name">Bangalore</div></div>
+        <div class="route-arrow">→</div>
+        <div class="route-city"><div class="route-days">D1–D2</div><div class="route-dot"></div><div class="route-name">Kochi</div></div>
+        <div class="route-arrow">→</div>
+        <div class="route-city"><div class="route-days">D2–D3</div><div class="route-dot"></div><div class="route-name">Athirappilly</div></div>
+        <div class="route-arrow">→</div>
+        <div class="route-city"><div class="route-days">D3–D4</div><div class="route-dot"></div><div class="route-name">Munnar</div></div>
+        <div class="route-arrow">→</div>
+        <div class="route-city"><div class="route-days">D5</div><div class="route-dot"></div><div class="route-name">Thekkady</div></div>
+        <div class="route-arrow">→</div>
+        <div class="route-city"><div class="route-days">D6</div><div class="route-dot"></div><div class="route-name">Alleppey</div></div>
+        <div class="route-arrow">→</div>
+        <div class="route-city"><div class="route-days">D7–D8</div><div class="route-dot"></div><div class="route-name">Varkala</div></div>
+        <div class="route-arrow">→</div>
+        <div class="route-city"><div class="route-days">D9</div><div class="route-dot"></div><div class="route-name">Kovalam</div></div>
+        <div class="route-arrow">→</div>
+        <div class="route-city"><div class="route-days">D9 Night</div><div class="route-dot"></div><div class="route-name">Bangalore</div></div>
+      </div>
+    </div>
+
+    <!-- DAY 1 -->
+    <div class="day-card">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-num">01</div>
+        <div class="day-info">
+          <h3>Bangalore → Kochi — Arrival + Evening Cruise ⭐</h3>
+          <div class="day-date">Sept 12 (Train raat 11 ko • Pahunch subah ~7 AM)</div>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-blue">City</span>
+          <span class="tag tag-gold">Cruise</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">7 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Kochi Pahuncho</div>
+              <div class="tl-desc">Ernakulam Junction se hotel/stay. Fresh ho jao, nashta karo. Check-in usually 12 PM hoti hai — bags rakh do, nikal jao.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">9 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Fort Kochi Walk</div>
+              <div class="tl-desc">Chinese Fishing Nets, Dutch Palace, Jewish Synagogue (Mattancherry), Kerala spice market. Rickshaw ya walking se cover karo.</div>
+              <div class="activity-chip">🏛️ Dutch Palace <span class="price">₹10/person</span></div>
+              <div class="activity-chip">⛵ Chinese Nets <span class="price">Free</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">1 PM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">Kerala Sadya Lunch ⭐</div>
+              <div class="tl-desc">Fort Kochi area mein authentic Sadya — banana leaf pe 20+ dishes. Poori tarah VEG hoti hai. Trip ka best food moment.</div>
+              <div class="activity-chip">🍌 Sadya Lunch <span class="price">₹250–350/person</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">5:30 PM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐ Kochi Sunset Cruise — 2 Hour with Food</div>
+              <div class="tl-desc">Marine Drive Jetty se departure. 2 ghante Arabian Sea + Kochi harbour cruise. Live music + DJ + buffet food (veg option available). Willingdon Island, Bolgatty, Fort Kochi views from water.</div>
+              <div class="activity-chip">🚢 Sunset Cruise <span class="price">₹700–800/person</span></div>
+              <div class="food-note"><strong>🌿 Veg:</strong> Buffet mein veg items hote hain. Booking ke time "veg preferred" bolo — confirm kar lena operator se.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">8 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Kathakali Show (Optional)</div>
+              <div class="tl-desc">Kerala Kathakali Centre — 45 min show, makeup + dance. Cultural experience. Pre-booking needed.</div>
+              <div class="activity-chip">🎭 Kathakali <span class="price">₹350/person</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="transport-bar">
+          <span class="icon">🏨</span>
+          <div><strong>Stay:</strong> Fort Kochi area — ₹800–1200/person (shared rooms) <div class="transport-detail">Recommendation: OYO/Zostel Fort Kochi ya Private guesthouse. 10 logon ke liye 2-3 rooms.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-card">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-num">02</div>
+        <div class="day-info">
+          <h3>Kochi → Athirappilly → Munnar</h3>
+          <div class="day-date">Sept 13 — Waterfall + Mountain Drive</div>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-green">Waterfall</span>
+          <span class="tag tag-green">Mountains</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">7 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Checkout + Nikal lo</div>
+              <div class="tl-desc">Subah jaldi nikalna hai. Kochi se Athirappilly 1.5 ghante — Tempo Traveller ready rakho.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">8:30 AM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐ Athirappilly Waterfalls</div>
+              <div class="tl-desc">India ka "Niagara of India". September mein full force mein hoga — 80 ft high falls. Bahubali shooting location. Jungle trail + viewpoints. 2–3 ghante spend karo.</div>
+              <div class="activity-chip">💧 Entry <span class="price">₹30/person</span></div>
+              <div class="activity-chip">📷 Photography <span class="price">₹50 extra</span></div>
+              <div class="food-note"><strong>🌿 Veg:</strong> Canteen available, South Indian nashta milega.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">11 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Vazhachal Waterfall (Nearby, Free)</div>
+              <div class="tl-desc">Athirappilly se 5 km — ek aur waterfall, free entry. 30 min kaafi. On the way hai toh miss mat karo.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">12 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Drive to Munnar — Scenic Ghaat</div>
+              <div class="tl-desc">3 ghante ki drive — Western Ghats ke through. Raste mein tea estates shuru ho jaate hain. Beech mein photo stops zaroor lena.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">3 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Munnar Check-in + Explore Town</div>
+              <div class="tl-desc">Check in, fresh ho jao. Evening Munnar town mein walk — local market, spice shops, fresh ginger chai.</div>
+            </div>
+          </div>
+        </div>
+        <div class="transport-bar">
+          <span class="icon">🚐</span>
+          <div><strong>Transport:</strong> Tempo Traveller — Kochi → Athirappilly → Munnar <div class="transport-detail">~₹3500–4000 for day (shared among 10 = ₹350–400/person)</div></div>
+        </div>
+        <div class="transport-bar" style="background: linear-gradient(135deg, #2a3a1a, #4a6a2a)">
+          <span class="icon">🏨</span>
+          <div><strong>Stay Munnar:</strong> ₹800–1200/person <div class="transport-detail">2 raat yahaan. Greenery wale homestay prefer karo — views amazing hote hain.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-card">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-num">03</div>
+        <div class="day-info">
+          <h3>Munnar — Full Mountain + Adventure Day ⭐</h3>
+          <div class="day-date">Sept 14 — Tea Gardens, Zipline, Top Station</div>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-green">Mountains</span>
+          <span class="tag tag-gold">Zipline</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">7 AM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐ Kolukkumalai — World's Highest Tea Estate</div>
+              <div class="tl-desc">Jeep ride 45 min — only way to reach. World's highest working tea estate (7900 ft). Clouds ke andar literally ghoom rahe hoge. Tea factory tour + fresh tea tasting. MUST DO.</div>
+              <div class="activity-chip">🚙 Jeep Ride <span class="price">₹400–500/person</span></div>
+              <div class="activity-chip">🍃 Tea Factory <span class="price">₹100/person</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">11 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Eravikulam National Park</div>
+              <div class="tl-desc">Nilgiri Tahr (endangered mountain goat) dekhne ka best place. Rolling green hills, misty valleys. Pre-booking mandatory — limited tickets.</div>
+              <div class="activity-chip">🦌 Entry <span class="price">₹125/person</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">2 PM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐ Eagle's Flight — India's Longest Zipline</div>
+              <div class="tl-desc">1.8 km dual zipline — 80 km/hr speed, 250m height. Tea gardens ke upar se fly karo. River Crozz ya Eagle's Flight — dono solid options. Sky Cycle + Bali Swing bhi available combo mein.</div>
+              <div class="activity-chip">🪂 Eagle's Flight Zipline <span class="price">₹3999/person</span></div>
+              <div class="activity-chip">⚡ Dreamland Park (40+ rides) <span class="price">₹1180/person</span></div>
+              <div class="food-note"><strong>💡 Tip:</strong> Group of 10 ke liye negotiate karo — 15–20% discount possible. Eagle's Flight zyada thrill deta hai, Dreamland mein variety zyada hai.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">5 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Top Station — Sunset Viewpoint</div>
+              <div class="tl-desc">Kerala-Tamil Nadu border. Valley views, sunset, cloud sea. ₹10 wali chai ke saath sunset — life mein yaad rahega. Free entry.</div>
+            </div>
+          </div>
+        </div>
+        <div class="transport-bar">
+          <span class="icon">🏨</span>
+          <div><strong>Stay:</strong> Same Munnar hotel <div class="transport-detail">Kolukkumalai ke liye local jeep hire karo — ₹2000–2500 total for group</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="day-card">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-num">04</div>
+        <div class="day-info">
+          <h3>Munnar → Thekkady — Jungle + Wildlife</h3>
+          <div class="day-date">Sept 15 — Periyar + Bamboo Rafting</div>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-green">Jungle</span>
+          <span class="tag tag-gold">Rafting</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">8 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Munnar → Thekkady Drive</div>
+              <div class="tl-desc">3 ghante scenic ghaat drive. Raste mein cardamom aur pepper plantations dikhenge. Beech mein road-side chai + scenery.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">11 AM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐ Bamboo Rafting — Periyar Tiger Reserve</div>
+              <div class="tl-desc">3-4 hour rafting through actual tiger reserve. Bamboo raft pe sawaari, elephant aur wildlife possible. Limited spots — ADVANCE BOOKING MANDATORY. Kerala Forest Dept. ka official program hai.</div>
+              <div class="activity-chip">🎋 Bamboo Rafting <span class="price">₹1500/person</span></div>
+              <div class="food-note"><strong>⚠️ Important:</strong> Only 12 seats per session. Isko sabse pehle book karo — 30-45 din pehle. Kerala Forest Dept. website se book karo.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">3 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Spice Plantation Walk</div>
+              <div class="tl-desc">Cardamom, vanilla, pepper, cloves — haath se chhu sakte ho. Guide fresh spice explain karta hai. 1.5 ghante. Spices khareedne ka best jagah.</div>
+              <div class="activity-chip">🌿 Plantation Tour <span class="price">₹200–300/person</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">5 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Periyar Lake Boat Ride</div>
+              <div class="tl-desc">1 ghante ki government boat ride. Lake ke beech mein — elephants, deer, birds possible. Evening mist aaती hai.</div>
+              <div class="activity-chip">⛵ Boat Ride <span class="price">₹150–200/person</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="transport-bar">
+          <span class="icon">🏨</span>
+          <div><strong>Stay Thekkady:</strong> ₹800–1000/person <div class="transport-detail">Jungle/forest feel wale guesthouse prefer karo</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day-card">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-num">05</div>
+        <div class="day-info">
+          <h3>Thekkady → Alleppey — Houseboat ⭐⭐</h3>
+          <div class="day-date">Sept 16 — Trip Ka Best Din</div>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-green">Backwater</span>
+          <span class="tag tag-blue">Houseboat</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">8 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Thekkady → Alleppey Drive</div>
+              <div class="tl-desc">3.5 ghante. Raste mein rubber plantations aur paddy fields. Subah fresh hawa mein drive mast lagti hai.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">11:30 AM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐ Canoe/Shikara Ride — Narrow Backwaters</div>
+              <div class="tl-desc">Houseboat se pehle — manual canoe se narrow village channels mein. Local ghar, kapda sukhate log, birds, silence. Houseboat se 10x zyada intimate. 1–1.5 ghante.</div>
+              <div class="activity-chip">🛶 Canoe Ride <span class="price">₹300–500/person</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">12 PM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐⭐ Houseboat Boarding + Full Night Stay</div>
+              <div class="tl-desc">Punnamada Jetty se board karo. Lunch + evening snacks + dinner + subah ka nashta — sab included. Veg meals specifically request karo booking ke time. Paddy fields, coconut trees, sunset on deck, stars raat mein. 10 logon ke liye 3-4 bedroom houseboat.</div>
+              <div class="activity-chip">🚢 Houseboat (Full + Night) <span class="price">₹35,000–45,000 total boat</span></div>
+              <div class="food-note"><strong>🌿 Veg:</strong> Pure veg ya Jain menu advance mein request karo. ₹250–500 extra per head lagta hai. <br><strong>💡 Tip:</strong> 10 logon ke liye ek bada 4-5 bedroom houseboat per person zyada sasta padta hai aur experience bhi beter hoga.</div>
+            </div>
+          </div>
+        </div>
+        <div class="transport-bar">
+          <span class="icon">🏨</span>
+          <div><strong>Stay:</strong> Houseboat pe hi! (Included in price) <div class="transport-detail">Raat 5:30 PM ke baad boat anchor hoti hai — govt rule. Stars dekho, silence enjoy karo.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 6 -->
+    <div class="day-card">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-num">06</div>
+        <div class="day-info">
+          <h3>Alleppey → Varkala Cliff ⭐</h3>
+          <div class="day-date">Sept 17 — Beach + Cliff Vibes</div>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-blue">Beach</span>
+          <span class="tag tag-green">Cliff</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">9 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Houseboat Checkout + Nashta</div>
+              <div class="tl-desc">South Indian breakfast on board — idli, appam, chai. 9 AM check-out.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">11:30 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Varkala Pahuncho + Check-in</div>
+              <div class="tl-desc">2.5 ghante drive. Cliff pe ya cliff road ke paas stay book karo — views cliff se directly dikhte hain.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">2 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Varkala Cliff Walk + Papanasam Beach</div>
+              <div class="tl-desc">Cliff edge pe bohot saari restaurants aur cafes hain — neeche sea hai. Papanasam Beach neeche — religiously significant, crowd-free end. Kayaking available.</div>
+              <div class="activity-chip">🚣 Kayaking <span class="price">₹300–500/person</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">5:30 PM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐ Varkala Cliff Sunset</div>
+              <div class="tl-desc">Trip ka most beautiful moment guaranteed. Cliff edge pe baith jao, sunset dekho. Orange sky + Arabian Sea + Kerala greenery. Dinner cliff pe hi karo.</div>
+            </div>
+          </div>
+        </div>
+        <div class="transport-bar">
+          <span class="icon">🏨</span>
+          <div><strong>Stay Varkala:</strong> ₹800–1200/person <div class="transport-detail">Cliff facing room prefer karo — subah ka view bohot acha hoga</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 7 -->
+    <div class="day-card">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-num">07</div>
+        <div class="day-info">
+          <h3>Varkala Full Day — Beach + Chill</h3>
+          <div class="day-date">Sept 18 — Sunrise, Swim, Relax</div>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-blue">Beach</span>
+          <span class="tag tag-green">Chill</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">6 AM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐ Cliff Sunrise</div>
+              <div class="tl-desc">10 logon ke saath cliff pe sunrise — ek group memory jo kabhi nahi bhuloge. Free. Just be there.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">9 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Beach Time + Water Sports</div>
+              <div class="tl-desc">Swim, chill, sun-bathe. September mein waves acchi hoti hain.</div>
+              <div class="activity-chip">🏄 Surfing Lesson <span class="price">₹500/person</span></div>
+              <div class="activity-chip">🚵 Cliff Cycling <span class="price">₹150/hr</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">12 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">North Cliff Area — Cafe Hopping</div>
+              <div class="tl-desc">Vibe Goa jaisi hai. Open air cafes, hammocks, fresh coconut, good music. Lunch here.</div>
+              <div class="food-note"><strong>🌿 Veg:</strong> Varkala mein bohot saare veg cafes hain — pancakes, smoothie bowls, hummus, pasta, South Indian thali sab milega.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">5 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Sunset + Cliff Dinner</div>
+              <div class="tl-desc">Second sunset yahan — phir se magical. Raat cliff pe seafood (non-veg walo ke liye) ya veg thali.</div>
+            </div>
+          </div>
+        </div>
+        <div class="transport-bar">
+          <span class="icon">🏨</span>
+          <div><strong>Stay:</strong> Same Varkala <div class="transport-detail">Aaram wala din — koi travel nahi</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 8 -->
+    <div class="day-card">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-num">08</div>
+        <div class="day-info">
+          <h3>Varkala → Kovalam — Adventure Beach Day</h3>
+          <div class="day-date">Sept 19 — Parasailing + Lighthouse</div>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-blue">Beach</span>
+          <span class="tag tag-gold">Adventure</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">9 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Varkala → Kovalam (1.5 ghante)</div>
+              <div class="tl-desc">Check out, nikal jao. Kovalam pahuncho, bags rakh do (early check-in try karo).</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">11 AM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">⭐ Parasailing over Arabian Sea</div>
+              <div class="tl-desc">Kerala coastline upar se dikhti hai — breathtaking. Kovalam Beach se available. 10–15 minute flight per person.</div>
+              <div class="activity-chip">🪂 Parasailing <span class="price">₹800–1000/person</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">1 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Glass Bottom Boat + Snorkeling</div>
+              <div class="tl-desc">Coral + tropical fish neeche dikhte hain. September mein clarity decent hoti hai.</div>
+              <div class="activity-chip">🐠 Glass Bottom Boat <span class="price">₹400–600/person</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">4 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Kovalam Lighthouse Climb + Sunset</div>
+              <div class="tl-desc">₹25 entry, 360 degree view of Kovalam beach. Last major sunset of trip.</div>
+              <div class="activity-chip">🏮 Lighthouse <span class="price">₹25/person</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">7 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Seafood Dinner (Beach Shack)</div>
+              <div class="tl-desc">Fresh catch, cliff side. Non-veg ke liye lobster/prawns. Veg ke liye — excellent Kerala curry, naan, veg thali available.</div>
+            </div>
+          </div>
+        </div>
+        <div class="transport-bar">
+          <span class="icon">🏨</span>
+          <div><strong>Stay Kovalam:</strong> ₹1000–1500/person <div class="transport-detail">Beach facing ya cliff side — ek raat hai toh splurge karo thoda!</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 9 -->
+    <div class="day-card">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-num">09</div>
+        <div class="day-info">
+          <h3>Kovalam → Trivandrum → Bangalore</h3>
+          <div class="day-date">Sept 20 — Ghar Wapsi</div>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-blue">Temple</span>
+          <span class="tag tag-gold">Departure</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="day-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">8 AM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Last Beach Morning</div>
+              <div class="tl-desc">Chai, sunrise, chill. Final goodbye to Kerala.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">10 AM</div>
+            <div class="tl-dot gold"></div>
+            <div class="tl-content">
+              <div class="tl-title">Trivandrum (30 min) — Padmanabhaswamy Temple</div>
+              <div class="tl-desc">World's richest temple — incredible Dravidian architecture. Darshan free, dress code (dhoti for men, saree/churidar for women). Outside se bhi photography amazing hai.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">12 PM</div>
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-title">Shopping + Trivandrum Station</div>
+              <div class="tl-desc">Spices, cashews, banana chips, coconut oil — Kerala souvenirs. Trivandrum Central station se train pakdo Bangalore ke liye.</div>
+            </div>
+          </div>
+        </div>
+        <div class="transport-bar">
+          <span class="icon">🚂</span>
+          <div><strong>Train:</strong> Trivandrum Central → Bangalore City/Yeshwantpur <div class="transport-detail">~12–13 ghante. Overnight train pakdo — subah Bangalore. IRCTC se advance booking karo.</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TRANSPORT SECTION -->
+<div id="transport" class="section">
+  <div class="container">
+    <h2 class="section-title">Transport Plan</h2>
+    <p class="section-subtitle">Ek jagah se doosri jagah kaise jana hai — har option ki detail</p>
+
+    <div class="transport-card">
+      <div class="tc-header">
+        <div class="tc-icon">🚐</div>
+        <div>
+          <div class="tc-title">Tempo Traveller (12-seater) <span class="recommend-badge">BEST OPTION ⭐</span></div>
+          <div class="tc-sub">Kochi se book karo — full trip ke liye</div>
+        </div>
+      </div>
+      <div class="tc-body">
+        10 logon ke liye yeh sab se acha option hai. Ek gaadi, ek driver, apni timing. Koi dependency nahi. Driver raat ko apni jagah soyega, subah ready rahega.
+        <br><br>
+        <strong>Cost:</strong> ₹4000–5000/day. 8 days = ₹32,000–40,000 total = <strong>₹3200–4000/person poore trip ka transport</strong>.
+        <br><br>
+        <strong>Kahan se book karo:</strong> Kochi mein local travel agents, MakeMyTrip/Goibibo pe "Tempo Traveller Kochi" search karo, ya hotel se arrange karwa lo.
+      </div>
+      <div class="pros-cons">
+        <div class="pro">✅ Apni timing — koi bus/train wait nahi</div>
+        <div class="pro">✅ 10 logon ke saath sab ek saath</div>
+        <div class="pro">✅ Ghaat roads pe comfortable</div>
+        <div class="pro">✅ Luggage problem nahi</div>
+        <div class="con">❌ Ek hi point se start-end</div>
+        <div class="con">❌ Advance booking chahiye (at least 1 month pehle)</div>
+      </div>
+    </div>
+
+    <div class="transport-card">
+      <div class="tc-header">
+        <div class="tc-icon">🛵</div>
+        <div>
+          <div class="tc-title">Bike Rental (within cities)</div>
+          <div class="tc-sub">Munnar, Varkala mein local explore ke liye</div>
+        </div>
+      </div>
+      <div class="tc-body">
+        Agar Tempo Traveller hai toh generally zaroorat nahi. But Varkala cliff pe ya Munnar town mein locally ghoomne ke liye Activa rent karna fun hota hai.
+        <br><br>
+        <strong>Cost:</strong> ₹400–600/day per bike. 5 bikes = ₹2000–3000/day.
+        <br><br>
+        <strong>Kab use karo:</strong> Day 7 (Varkala full day) ya Day 3 (Munnar local sightseeing).
+      </div>
+      <div class="pros-cons">
+        <div class="pro">✅ Local freedom</div>
+        <div class="pro">✅ Scenic ride mein alag feel</div>
+        <div class="con">❌ Group split ho jaata hai</div>
+        <div class="con">❌ Ghaat roads pe experience chahiye</div>
+      </div>
+    </div>
+
+    <div class="transport-card">
+      <div class="tc-header">
+        <div class="tc-icon">📱</div>
+        <div>
+          <div class="tc-title">Ola/Uber/Rapido</div>
+          <div class="tc-sub">Emergency ya short distances ke liye</div>
+        </div>
+      </div>
+      <div class="tc-body">
+        Kerala mein Ola available hai but Kochi ke bahar availability limited hai. Thekkady, Munnar mein surge pricing aa sakti hai. Main transport ke liye rely mat karo.
+        <br><br>
+        <strong>Use karo:</strong> Kochi mein pehle din Fort Kochi ghoomne ke liye ya Trivandrum station pe last day.
+      </div>
+      <div class="pros-cons">
+        <div class="pro">✅ Kochi mein accha kaam karta hai</div>
+        <div class="con">❌ Remote areas mein unavailable</div>
+        <div class="con">❌ 10 logon ke liye multiple cabs expensive</div>
+      </div>
+    </div>
+
+    <div class="transport-card">
+      <div class="tc-header">
+        <div class="tc-icon">🚌</div>
+        <div>
+          <div class="tc-title">KSRTC (Kerala State Bus)</div>
+          <div class="tc-sub">Budget option — recommended nahi</div>
+        </div>
+      </div>
+      <div class="tc-body">
+        Cheapest option hai (₹150–300/person per route) but 10 logon ke saath coordination bahut mushkil. Timing flexible nahi. Luggage problem. Ghaat routes pe time zyada lagta hai.
+        <br><br>
+        <strong>Use karo:</strong> Agar emergency mein Tempo breakdown ho jaye toh backup.
+      </div>
+      <div class="pros-cons">
+        <div class="pro">✅ Sab se sasta</div>
+        <div class="con">❌ Group ke liye impractical</div>
+        <div class="con">❌ Fixed timing, multiple changes</div>
+      </div>
+    </div>
+
+    <div style="background: var(--forest); color: var(--cream); border-radius: 14px; padding: 1.2rem 1.5rem; margin-top: 1.5rem;">
+      <div style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); margin-bottom: 0.8rem;">🚂 Train Bookings</div>
+      <div style="font-size: 0.85rem; line-height: 1.8; opacity: 0.9;">
+        <strong>Bangalore → Kochi:</strong> Sept 11 raat<br>
+        Best trains: Rajya Rani Express (12677) ya Island Express (16345)<br>
+        ~12–13 ghante. 3A sleeper = ₹600–800/person<br><br>
+        <strong>Trivandrum → Bangalore:</strong> Sept 20<br>
+        Best: Thiruvananthapuram-Bengaluru Express (16526)<br>
+        ~15-16 ghante. Book 60 din pehle se IRCTC pe.<br><br>
+        <strong>⚠️ Tatkal quota:</strong> 120 din se ticket open hoti hai — Sept trips ke liye July mein hi book karo!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVITIES SECTION -->
+<div id="activities" class="section">
+  <div class="container">
+    <h2 class="section-title">All Exciting Activities</h2>
+    <p class="section-subtitle">Zipline se houseboat tak — kuch miss nahi hoga</p>
+
+    <div class="activity-card">
+      <div class="act-icon">🚢</div>
+      <div class="act-body">
+        <div class="act-title">Kochi Evening Cruise (2 hr) ⭐</div>
+        <div class="act-location">📍 Kochi • Day 1</div>
+        <div class="act-desc">Marine Drive Jetty se 2-hour sunset cruise. Live music, DJ, buffet food (veg available), Arabian Sea views. Neo Classic ya Minar Cruise — dono solid. Bolgatty Island, Fort Kochi, Willingdon Island — sab water se dikhenge.</div>
+        <div class="act-price">₹700–800/person • Book: Thrillophilia / Direct call</div>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="act-icon">🌊</div>
+      <div class="act-body">
+        <div class="act-title">Athirappilly Waterfall Trek</div>
+        <div class="act-location">📍 Athirappilly • Day 2</div>
+        <div class="act-desc">India's most powerful waterfall — September mein full force. Bahubali shooting location. Jungle trail + multiple viewpoints. Best in monsoon/post-monsoon (September = perfect timing).</div>
+        <div class="act-price">₹30/person entry • No advance booking needed</div>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="act-icon">🚙</div>
+      <div class="act-body">
+        <div class="act-title">Kolukkumalai Jeep Safari ⭐</div>
+        <div class="act-location">📍 Munnar • Day 3</div>
+        <div class="act-desc">World's highest tea estate (7900 ft). Only jeep se accessible. Clouds literally andar aate hain. Tea factory tour, fresh tea tasting. Most Instagram-worthy moment of entire trip.</div>
+        <div class="act-price">₹400–500/person jeep + ₹100 factory • Book: Local jeep operators Munnar</div>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="act-icon">🪂</div>
+      <div class="act-body">
+        <div class="act-title">Eagle's Flight — India's Longest Zipline ⭐⭐</div>
+        <div class="act-location">📍 Munnar • Day 3</div>
+        <div class="act-desc">1.8 km dual zipline, 80 km/hr, 250m height over tea gardens. Takes ~2-3 minutes but memory lifetime ke liye. River Crozz mein Sky Cycle + Bali Swing combo bhi available. Group of 10 ke liye discount negotiate karo.</div>
+        <div class="act-price">₹3999/person (Eagle's Flight) • Book: Thrillophilia / Direct +91 6235 800 111</div>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="act-icon">🎋</div>
+      <div class="act-body">
+        <div class="act-title">Bamboo Rafting — Periyar Tiger Reserve ⭐⭐</div>
+        <div class="act-location">📍 Thekkady • Day 4</div>
+        <div class="act-desc">3-4 ghante rafting actual tiger reserve ke through. Bamboo raft, forest trail, wildlife possible (elephant, deer, birds). Kerala Forest Department ka official program. Only 12 seats — most exclusive activity of trip.</div>
+        <div class="act-price">₹1500/person • Book: keralawildbooking.com — 30-45 din advance MANDATORY</div>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="act-icon">🛶</div>
+      <div class="act-body">
+        <div class="act-title">Alleppey Canoe Ride (Village Channels)</div>
+        <div class="act-location">📍 Alleppey • Day 5</div>
+        <div class="act-desc">Manual canoe se narrow backwater village channels mein. Houseboat nahi jaate yahan — sirf local boats. Local life directly dikhti hai. Silence, birds, coconut groves. Houseboat se zyada intimate experience.</div>
+        <div class="act-price">₹300–500/person • Book: On-spot ya hotel through arrange</div>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="act-icon">🚢</div>
+      <div class="act-body">
+        <div class="act-title">Alleppey Houseboat — Full Night Stay ⭐⭐</div>
+        <div class="act-location">📍 Alleppey • Day 5</div>
+        <div class="act-desc">Trip ka centrepiece. 4-5 bedroom private houseboat, full Kerala meals (veg custom menu available), sunset on deck, stars raat mein. Paddy fields + coconut trees + backwaters — greenery ka peak experience.</div>
+        <div class="act-price">₹35,000–45,000 total (10 log) = ₹3500–4500/person • Book: houseboatmart.in / alleppeyhouseboat.in — 45 din advance</div>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="act-icon">🌅</div>
+      <div class="act-body">
+        <div class="act-title">Varkala Cliff Sunset ⭐</div>
+        <div class="act-location">📍 Varkala • Day 6 & 7</div>
+        <div class="act-desc">Kerala ka most dramatic beach — cliff ke edge pe restaurants hain, neeche Arabian Sea. Sunset yahan legendary hai. Free activity — bas wahan hona kaafi hai. Kayaking, surfing bhi available.</div>
+        <div class="act-price">Free sunset • Kayaking ₹300–500 • Surfing ₹500/lesson</div>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="act-icon">🪂</div>
+      <div class="act-body">
+        <div class="act-title">Parasailing — Kovalam Beach</div>
+        <div class="act-location">📍 Kovalam • Day 8</div>
+        <div class="act-desc">Kerala coastline upar se dekho — breathtaking views. 10-15 minute flight. Sept mein weather usually good. On-spot booking milti hai but group ke liye advance call karo.</div>
+        <div class="act-price">₹800–1000/person • Book: On spot ya +91 numbers on Kovalam beach</div>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="act-icon">🐠</div>
+      <div class="act-body">
+        <div class="act-title">Glass Bottom Boat — Kovalam</div>
+        <div class="act-location">📍 Kovalam • Day 8</div>
+        <div class="act-desc">Neeche coral + tropical fish dikhte hain without getting wet. Good for poori group including those who don't swim. 1-1.5 ghante.</div>
+        <div class="act-price">₹400–600/person • On-spot booking</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- VEG FOOD SECTION -->
+<div id="veg" class="section">
+  <div class="container">
+    <h2 class="section-title">Veg Food Guide 🌿</h2>
+    <p class="section-subtitle">Veg logon ke liye kya kya milega — har jagah ki detail</p>
+
+    <div class="veg-card">
+      <h4>✅ Kerala mein Veg logon ke liye overall good news</h4>
+      <p>Kerala actually ek achi jagah hai veg logon ke liye — South Indian food mostly veg-friendly hota hai. Idli, dosa, appam, puttu, avial, sambar, rasam, Kerala thali — sab veg mein excellent milta hai. Seedha bolo "veg only" — log samajhte hain.</p>
+    </div>
+
+    <div class="veg-card">
+      <h4>🍌 Kerala Sadya — MUST TRY (Fully Veg)</h4>
+      <p>Traditional Kerala feast — banana leaf pe 20+ dishes. Poori tarah veg hoti hai by tradition. Rice, sambhar, rasam, avial, thoran, pachadi, payasam, papad — sab ek saath. ₹250–350/person. Fort Kochi ya Alleppey mein karo. Trip ka best food memory guaranteed.</p>
+    </div>
+
+    <div class="veg-card">
+      <h4>🚢 Houseboat — Veg Meals</h4>
+      <p>Booking ke time clearly bolna — "Pure vegetarian meals required". Most operators ₹250–500 extra per head lete hain for custom veg menu. Jain food bhi arrange hoti hai if needed. Avial, vegetable curry, sambar rice, appam — fresh cooked onboard.</p>
+    </div>
+
+    <div class="veg-card">
+      <h4>🍃 Thekkady + Munnar — Veg Options</h4>
+      <p>Hill station areas mein tourist-friendly restaurants hain. South Indian thali, chapati + dal, veg kurma, aloo paratha — sab milta hai. Spice plantation mein cardamom chai + veg snacks milte hain.</p>
+    </div>
+
+    <div class="veg-card">
+      <h4>🏖️ Varkala Cliff — Best Veg Cafe Scene</h4>
+      <p>Varkala mein international-style cafes hain jahan excellent veg food milta hai. Hummus, falafel, veg wraps, smoothie bowls, banana pancakes, Kerala thali. North Cliff area pe sab best milta hai. Prices slightly higher (₹200–400/dish) but quality good.</p>
+    </div>
+
+    <div class="veg-card">
+      <h4>🚢 Kochi Cruise — Veg Food</h4>
+      <p>Sunset cruise mein buffet hota hai. Booking ke time "veg preference" bolo — operators usually accommodate karte hain. South Indian veg items + snacks included in the package.</p>
+    </div>
+
+    <div style="background: #fff8e8; border: 1px solid #e8d5a3; border-radius: 12px; padding: 1.2rem; margin-top: 1rem;">
+      <div style="font-weight: 700; color: #8b6914; margin-bottom: 0.6rem;">💡 Pro Tips for Veg Group</div>
+      <div style="font-size: 0.83rem; color: #6b5a30; line-height: 1.7;">
+        1. Har restaurant mein alag se order karo — "veg thali" usually available hai everywhere<br>
+        2. Houseboat + cruise booking ke time advance mein veg requirement clearly mention karo in writing/WhatsApp<br>
+        3. Coconut-based Kerala curries (avial, olan, kootu) — sab veg hain aur absolutely delicious<br>
+        4. Appam + vegetable stew — quintessential Kerala veg breakfast, must try<br>
+        5. Street food: Banana chips, achappam, halwa — sab veg hain
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUDGET SECTION -->
+<div id="budget" class="section">
+  <div class="container">
+    <h2 class="section-title">Budget Breakdown</h2>
+    <p class="section-subtitle">Per person estimate (10 logon ke saath share karne ke baad)</p>
+
+    <div style="overflow-x: auto; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 2px 20px rgba(0,0,0,0.08);">
+      <table class="budget-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Details</th>
+            <th>Per Person</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🚂 Train (BLR↔Kerala)</td>
+            <td>3A Sleeper both ways, Sept 11 & 20</td>
+            <td>₹1,500–2,500</td>
+          </tr>
+          <tr>
+            <td>🚐 Tempo Traveller</td>
+            <td>8 days × ₹4500/day ÷ 10</td>
+            <td>₹3,500–4,000</td>
+          </tr>
+          <tr>
+            <td>🏨 Stay (8 nights)</td>
+            <td>Budget: ₹800/person, Mid: ₹1200/person</td>
+            <td>₹6,400–9,600</td>
+          </tr>
+          <tr>
+            <td>🍽️ Food (8 days)</td>
+            <td>₹500–800/day — South Indian mostly cheap</td>
+            <td>₹4,000–6,400</td>
+          </tr>
+          <tr>
+            <td>🚢 Houseboat (1 night)</td>
+            <td>₹40,000 total boat ÷ 10 (veg menu extra)</td>
+            <td>₹4,000–4,500</td>
+          </tr>
+          <tr>
+            <td>🚢 Kochi Cruise</td>
+            <td>2hr sunset cruise with food</td>
+            <td>₹700–800</td>
+          </tr>
+          <tr>
+            <td>🪂 Eagle's Flight Zipline</td>
+            <td>India's longest zipline, Munnar</td>
+            <td>₹3,000–4,000</td>
+          </tr>
+          <tr>
+            <td>🎋 Bamboo Rafting</td>
+            <td>Periyar Tiger Reserve</td>
+            <td>₹1,500</td>
+          </tr>
+          <tr>
+            <td>🪂 Parasailing</td>
+            <td>Kovalam</td>
+            <td>₹800–1,000</td>
+          </tr>
+          <tr>
+            <td>🏛️ Sightseeing Entries</td>
+            <td>Athirappilly, Eravikulam, Periyar, etc.</td>
+            <td>₹1,000–1,500</td>
+          </tr>
+          <tr>
+            <td>🛶 Canoe/Kayaking</td>
+            <td>Alleppey + Varkala</td>
+            <td>₹600–1,000</td>
+          </tr>
+          <tr>
+            <td>🚙 Jeep (Kolukkumalai)</td>
+            <td>₹2500 total ÷ 10</td>
+            <td>₹250</td>
+          </tr>
+          <tr>
+            <td>🛍️ Shopping + Misc</td>
+            <td>Spices, cashews, souvenirs</td>
+            <td>₹1,000–2,000</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="total">
+            <td colspan="2">💰 Total Per Person (Budget)</td>
+            <td>~₹28,000</td>
+          </tr>
+          <tr class="total">
+            <td colspan="2">💰 Total Per Person (Mid-Range)</td>
+            <td>~₹42,000</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="per-person-note">
+      <span class="big">₹28k – ₹42k</span>
+      <span class="small">Per person • Sab kuch include • 9 din Kerala poora explore</span>
+    </div>
+
+    <div style="background: var(--forest); color: var(--cream); border-radius: 12px; padding: 1.2rem; margin-top: 1rem; font-size: 0.83rem; line-height: 1.7;">
+      <strong style="color: var(--gold);">💡 Budget Save Karne Ke Tips:</strong><br>
+      • Houseboat pe ek boat 10 logon ke liye negotiate karo — per-person rate kam aayega<br>
+      • Eagle's Flight pe group discount maango (10 log = 10-15% off possible)<br>
+      • Homestay aur guesthouses prefer karo over hotels — cheaper + better experience<br>
+      • South Indian thali ₹80–150 mein milti hai — bahar ka khana cheap hai<br>
+      • Train 3A ye 60+ days advance mein book karo — Tatkal se 30-40% sasta
+    </div>
+  </div>
+</div>
+
+<!-- BOOKINGS SECTION -->
+<div id="bookings" class="section">
+  <div class="container">
+    <h2 class="section-title">Booking Guide</h2>
+    <p class="section-subtitle">Kya, kab, kahan se book karna hai — ek baar mein sab clear</p>
+
+    <div class="booking-card">
+      <div class="booking-header">
+        <h4>🚂 Train Tickets — Bangalore ↔ Kerala</h4>
+        <span class="urgency-badge urgent">ABHI BOOK KAR0</span>
+      </div>
+      <div class="booking-body">
+        <div class="booking-row"><span class="label">Kab book karo</span><span class="value">Aaj se hi — seats fill ho rahi hain (Sept popular)</span></div>
+        <div class="booking-row"><span class="label">Kahan se</span><span class="value"><a href="https://www.irctc.co.in">irctc.co.in</a> ya IRCTC Rail Connect app</span></div>
+        <div class="booking-row"><span class="label">Train (BLR→KCH)</span><span class="value">Sept 11 — Island Express (16345) ya Rajya Rani (12677)</span></div>
+        <div class="booking-row"><span class="label">Train (TVM→BLR)</span><span class="value">Sept 20 — Thiruvananthapuram Express (16526)</span></div>
+        <div class="booking-row"><span class="label">Class</span><span class="value">3A (AC Sleeper) — ₹600–900/person one way</span></div>
+        <div class="booking-row"><span class="label">Note</span><span class="value">Group of 10 ke liye ek hi PNR mein max 6 — do alag bookings karo</span></div>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <div class="booking-header">
+        <h4>🎋 Bamboo Rafting — Periyar Tiger Reserve</h4>
+        <span class="urgency-badge urgent">30-45 DIN PEHLE</span>
+      </div>
+      <div class="booking-body">
+        <div class="booking-row"><span class="label">Kab book karo</span><span class="value">July mein — sirf 12 seats per session, fills fast</span></div>
+        <div class="booking-row"><span class="label">Kahan se</span><span class="value"><a href="https://keralawildbooking.com">keralawildbooking.com</a></span></div>
+        <div class="booking-row"><span class="label">Kab jaana hai</span><span class="value">Sept 15 — morning slot prefer karo (7-8 AM)</span></div>
+        <div class="booking-row"><span class="label">Cost</span><span class="value">₹1500/person + ₹100 forest entry</span></div>
+        <div class="booking-row"><span class="label">Note</span><span class="value">10 logon ke liye 12-seat limit check — 2 sessions book karne pad sakte hain</span></div>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <div class="booking-header">
+        <h4>🚢 Alleppey Houseboat (Full Night)</h4>
+        <span class="urgency-badge urgent">45 DIN PEHLE</span>
+      </div>
+      <div class="booking-body">
+        <div class="booking-row"><span class="label">Kab book karo</span><span class="value">July end mein — September mein demand high</span></div>
+        <div class="booking-row"><span class="label">Kahan se</span><span class="value"><a href="https://houseboatmart.in">houseboatmart.in</a> ya <a href="https://alleppeyhouseboat.in">alleppeyhouseboat.in</a></span></div>
+        <div class="booking-row"><span class="label">Kya book karo</span><span class="value">4-5 bedroom premium houseboat (10 log ke liye)</span></div>
+        <div class="booking-row"><span class="label">Cost</span><span class="value">₹35,000–45,000 total (veg menu extra ₹250-500/person)</span></div>
+        <div class="booking-row"><span class="label">Important</span><span class="value">Booking ke time likhkar bolna: "Pure veg meals required for X persons"</span></div>
+        <div class="booking-row"><span class="label">Cancellation</span><span class="value">30+ days pehle = full refund. 15 din ke andar = no refund</span></div>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <div class="booking-header">
+        <h4>🪂 Eagle's Flight Zipline — Munnar</h4>
+        <span class="urgency-badge soon">15-20 DIN PEHLE</span>
+      </div>
+      <div class="booking-body">
+        <div class="booking-row"><span class="label">Kab book karo</span><span class="value">August last week</span></div>
+        <div class="booking-row"><span class="label">Kahan se</span><span class="value"><a href="https://thrillophilia.com">Thrillophilia</a> ya direct +91 6235 800 111</span></div>
+        <div class="booking-row"><span class="label">Kab jaana hai</span><span class="value">Sept 14 — morning slot (subah clear view hoti hai)</span></div>
+        <div class="booking-row"><span class="label">Cost</span><span class="value">₹3999/person — group discount maango</span></div>
+        <div class="booking-row"><span class="label">Note</span><span class="value">Weight limit: 40–120 kg. Age: 15+ years only</span></div>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <div class="booking-header">
+        <h4>🚐 Tempo Traveller — Kochi se</h4>
+        <span class="urgency-badge soon">1 MONTH PEHLE</span>
+      </div>
+      <div class="booking-body">
+        <div class="booking-row"><span class="label">Kab book karo</span><span class="value">August 1st week</span></div>
+        <div class="booking-row"><span class="label">Kahan se</span><span class="value">MakeMyTrip "Tempo Traveller Kochi" ya Google pe "Kochi Tempo Traveller hire"</span></div>
+        <div class="booking-row"><span class="label">Duration</span><span class="value">Sept 12–20 (8 full days)</span></div>
+        <div class="booking-row"><span class="label">Cost</span><span class="value">₹4000–5000/day negotiate karo — ₹32,000–40,000 total</span></div>
+        <div class="booking-row"><span class="label">Tip</span><span class="value">Driver ka number save karo — 24x7 coordination ke liye</span></div>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <div class="booking-header">
+        <h4>🚢 Kochi Sunset Cruise</h4>
+        <span class="urgency-badge soon">7-10 DIN PEHLE</span>
+      </div>
+      <div class="booking-body">
+        <div class="booking-row"><span class="label">Kab book karo</span><span class="value">September first week</span></div>
+        <div class="booking-row"><span class="label">Kahan se</span><span class="value"><a href="https://thrillophilia.com">Thrillophilia</a> / <a href="https://universaladventures.in">Universal Adventures</a> / Neo Classic direct</span></div>
+        <div class="booking-row"><span class="label">Timing</span><span class="value">5:30 PM – 7:30 PM • Marine Drive Jetty</span></div>
+        <div class="booking-row"><span class="label">Cost</span><span class="value">₹700–800/person (food + live music included)</span></div>
+        <div class="booking-row"><span class="label">Note</span><span class="value">Veg preference mention karo at time of booking</span></div>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <div class="booking-header">
+        <h4>🏛️ Eravikulam National Park — Munnar</h4>
+        <span class="urgency-badge soon">1-2 WEEKS PEHLE</span>
+      </div>
+      <div class="booking-body">
+        <div class="booking-row"><span class="label">Kab book karo</span><span class="value">August end</span></div>
+        <div class="booking-row"><span class="label">Kahan se</span><span class="value"><a href="https://eravikulam.org">eravikulam.org</a> (online advance tickets)</span></div>
+        <div class="booking-row"><span class="label">Timing</span><span class="value">7 AM – 6 PM. Morning best for wildlife</span></div>
+        <div class="booking-row"><span class="label">Cost</span><span class="value">₹125/person Indian • Last entry 4 PM</span></div>
+      </div>
+    </div>
+
+    <div style="background: var(--deep); color: var(--cream); border-radius: 14px; padding: 1.3rem 1.5rem; margin-top: 1.5rem;">
+      <div style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); margin-bottom: 1rem;">📅 Booking Timeline Summary</div>
+      <div style="font-size: 0.82rem; line-height: 2;">
+        <strong style="color: var(--jade);">Aaj se:</strong> Train tickets IRCTC — do it NOW<br>
+        <strong style="color: var(--jade);">July mein:</strong> Bamboo Rafting (most critical)<br>
+        <strong style="color: var(--jade);">July end:</strong> Houseboat Alleppey<br>
+        <strong style="color: var(--jade);">August 1st week:</strong> Tempo Traveller, Eravikulam<br>
+        <strong style="color: var(--jade);">August last week:</strong> Eagle's Flight Zipline<br>
+        <strong style="color: var(--jade);">Sept 1st week:</strong> Kochi Sunset Cruise, remaining activities
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: document.querySelector('.nav-tabs').offsetTop - 10, behavior: 'smooth' });
+  }
+
+  function toggleDay(header) {
+    const body = header.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open');
+    header.classList.toggle('open');
+  }
+
+  // Auto-open Day 1
+  document.addEventListener('DOMContentLoaded', () => {
+    const firstHeader = document.querySelector('.day-header');
+    if (firstHeader) {
+      firstHeader.classList.add('open');
+      firstHeader.nextElementSibling.classList.add('open');
+    }
+  });
+</script>
+
+</body>
+</html>
